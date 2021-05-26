@@ -1,11 +1,11 @@
 const express = require('express')
-const {Router} = require('express')
-
 const mongoose = require('mongoose')
 
 
 const app = express()
 const PORT = process.env.PORT || 5000
+app.use(express.json({extended: true}))
+app.use('/api/auth', require('./routes/auth.route'))
 
 async function start() {
     try {
@@ -24,12 +24,12 @@ async function start() {
 }
 start()
 
-app.get('/', (req, res) => {
-    res.status(200).send('qwertyu')
-})
+// app.get('/', (req, res) => {
+//     res.status(200).send('qwertyu')
+// })
 
-app.get('/main', (req, res) => {
-    res.send({type:"GET"})
-})
+// app.get('/main', (req, res) => {
+//     res.send({type:"GET"})
+// })
 
 
