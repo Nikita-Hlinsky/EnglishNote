@@ -7,4 +7,4 @@ const schema = new Schema({
     words: [{type: Types.ObjectId, ref: 'Words'}]
 })
 
-module.exports = model('User', schema)
+module.exports = model('User', schema) 

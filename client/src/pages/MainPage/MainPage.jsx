@@ -1,80 +1,80 @@
-import React from 'react'
-
-// import React, { useCallback, useContext, useState, useEffect } from 'react'
-// import {AuthContext} from '../../context/AuthContext'
-// import axios from 'axios'
+import React, { useCallback, useContext, useState, useEffect } from 'react'
+import {AuthContext} from '../../context/AuthContext'
+import axios from 'axios'
 import './MainPage.scss'
 
 
 export default function MainPage() {
-    // const [text, setText] = useState('')
-    // const [todos, setTodos] = useState([])
-    // const {userId} = useContext(AuthContext)
+    const [word, setWord] = useState('')
+    const [translate, setTranslate] = useState('')
+    const [words, setWords] = useState([])
+    const {userId} = useContext(AuthContext)
     
-    // const getTodo = useCallback(async () => {
-    //     try {
-    //         await axios.get('api/todo', {
-    //             headers: {
-    //                 'Context-Type': 'application/json'
-    //             },
-    //             params: {userId}
-    //         })
-    //         .then((response) => setTodos(response.data))  
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }, [userId])
+    const getWord = useCallback(async () => {
+        try {
+            await axios.get('api/word', {
+                headers: {
+                    'Context-Type': 'application/json'
+                },
+                params: {userId}
+            })
+            .then((response) => setWords(response.data))  
+        } catch (error) {
+            console.log(error)
+        }
+    }, [userId])
     
-    // const createTodo = useCallback( async () => {
-    //     if (!text) {
-    //         return null
-    //     }
-    //     try {
-    //         await axios.post('/api/todo/add', {text, userId}, {
-    //             headers: {
-    //                 'Context-Type': 'application/json'
-    //             }
-    //         })
-    //         .then((response) => {
-    //             setTodos([...todos], response.data)
-    //             setText('')
-    //             getTodo()
-    //         })
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }, [text, userId, todos, getTodo]) 
+    const createWord = useCallback( async () => {
+        if (!word) {
+            return null
+        }
+        try {
+            await axios.post('/api/word/add', {word, translate, userId}, {
+                headers: {
+                    'Context-Type': 'application/json'
+                }
+            })
+            .then((response) => {
+                setWords([...words], response.data)
+                setWord('')
+                setTranslate('')
+                getWord()
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }, [word, translate, userId, words, getWord]) 
     
-    // useEffect(() => {
-    //     getTodo()
-    // }, [getTodo])
+    useEffect(() => {
+        getWord()
+    }, [getWord])
 
-    // const removeTodos = useCallback(async (id) => {
-    //     try {
-    //         await axios.delete(`/api/todo/delete/${id}`, {id}, {headers:{
-    //             'Context-Type': 'application/json'
-    //         }})
-    //         .then(() => getTodo())
+    const removeWords = useCallback(async (id) => {
+        try {
+            await axios.delete(`/api/word/delete/${id}`, {id}, {headers:{
+                'Context-Type': 'application/json'
+            }})
+            .then(() => getWord())
             
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }, [getTodo])
+        } catch (error) {
+            console.log(error);
+        }
+    }, [getWord])
 
-    // const completedTodo = useCallback(async (id) => {
-    //     try {
-    //         await axios.put(`/api/todo/completed/${id}`, {id}, {headers:{
-    //             'Context-Type': 'application/json'
-    //         }})
-    //         .then((response) => {
-    //             setTodos([...todos], response.data)
-    //             getTodo()
-    //         })
+    const completedWords = useCallback(async (id) => {
+        try {
+            await axios.put(`/api/word/completed/${id}`, {id}, {headers:{
+                'Context-Type': 'application/json'
+            }})
+            .then((response) => {
+                setWords([...words], response.data)
+                getWord()
+            })
             
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }, [getTodo, todos])
+        } catch (error) {
+            console.log(error);
+        }
+    }, [getWord, words])
 
     // const importantTodo = useCallback(async (id) => {
     //     try {
@@ -96,6 +96,68 @@ export default function MainPage() {
     return (
         <div className="container">
             <h1>main page</h1>
+            <div className="main-page">
+                <h4>Add new word</h4>
+                <form className="form form-login" onSubmit={e => e.preventDefault()}>
+                    <div className="row">
+                        <div className="input-field col s12">
+                            <input 
+                                type="text"
+                                id="word"
+                                name="input"
+                                value={word}
+                                className="validate"
+                                onChange={e => setWord(e.target.value)}
+                            />
+                            <label htmlFor="input">word</label>
+                        </div>
+                        <div className="input-field col s12">
+                            <input 
+                                type="text"
+                                id="translate"
+                                name="input"
+                                value={translate}
+                                className="validate"
+                                onChange={e => setTranslate(e.target.value)}
+                            />
+                            <label htmlFor="input">translate</label>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <button className="waves-effect waves-light btn blue" onClick={createWord}>Add</button>
+                    </div>
+                </form>
+
+                <h3>Saved words:</h3>
+                <div className="todos">
+                    {
+                        words.map((word, index) => {
+                            let cls = ['row flex todos-item']
+                            
+                            // if (word.important) {
+                            //     cls.push('important')
+                            // }
+                            if (word.completed) {
+                                cls.push('completed')
+                            }
+
+                            return (
+                                <div className={cls.join(' ')} key={index}>
+                                    {/* <div className="col todos-num">{index + 1}</div> */}
+                                    <div className="col todos-text">{word.word}</div>
+                                    <p> - </p>
+                                    <div className="col todos-text">{word.translate}</div>
+                                    <div className="col todos-btns">
+                                        <i className="material-icons blue-text" onClick={() => completedWords(word._id)}>check</i>
+                                        {/* <i className="material-icons orange-text" onClick={() => importantTodo(word._id)}>warning</i> */}
+                                        <i className="material-icons red-text" onClick={() => removeWords(word._id)}>delete</i>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            </div>
         </div>
     )
 }
