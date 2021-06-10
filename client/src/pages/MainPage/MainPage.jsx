@@ -76,20 +76,6 @@ export default function MainPage() {
         }
     }, [getWord, words])
 
-    // const importantTodo = useCallback(async (id) => {
-    //     try {
-    //         await axios.put(`/api/todo/important/${id}`, {id}, {headers:{
-    //             'Context-Type': 'application/json'
-    //         }})
-    //         .then((response) => {
-    //             setTodos([...todos], response.data)
-    //             getTodo()
-    //         })
-            
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }, [getTodo, todos])
 
     
 
